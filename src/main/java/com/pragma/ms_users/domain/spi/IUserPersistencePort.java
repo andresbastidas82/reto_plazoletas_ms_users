@@ -6,4 +6,6 @@ public interface IUserPersistencePort {
 
     User saveUser(User user);
 
+    User getUserById(Long userId);
+
 }

@@ -16,4 +16,9 @@ public class UserUseCase implements IUserServicePort {
     public User saveUser(User user) {
         return userPersistencePort.saveUser(user);
     }
+
+    @Override
+    public User getUserById(Long userId) {
+        return userPersistencePort.getUserById(userId);
+    }
 }

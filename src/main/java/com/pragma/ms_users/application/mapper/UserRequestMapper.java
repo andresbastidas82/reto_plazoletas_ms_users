@@ -23,8 +23,13 @@ public interface UserRequestMapper {
     @Mapping(target = "documentType", qualifiedByName = "getDocument")
     User toUser(UserRequest userRequest);
 
+    @Mapping(target = "documentType", qualifiedByName = "showDocument")
     UserResponse toUserResponse(User user);
 
+    @Named("showDocument")
+    static String showDocument(DocumentTypeEnum documentType) {
+        return documentType.getDocumentName();
+    }
 
     @Named("getDocument")
     static DocumentTypeEnum getDocument(String documentType) {
