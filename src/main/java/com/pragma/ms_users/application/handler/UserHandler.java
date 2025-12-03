@@ -35,4 +35,9 @@ public class UserHandler implements IUserHandler {
         User user = userServicePort.saveUser(userRequestMapper.toUser(userRequest));
         return userRequestMapper.toUserResponse(user);
     }
+
+    @Override
+    public UserResponse getUserById(Long userId) {
+        return userRequestMapper.toUserResponse(userServicePort.getUserById(userId));
+    }
 }

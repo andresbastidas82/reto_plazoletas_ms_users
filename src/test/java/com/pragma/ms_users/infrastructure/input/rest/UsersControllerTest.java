@@ -52,7 +52,7 @@ class UsersControllerTest {
         userRequest.setBirthDate(LocalDate.of(1990, 1, 1));
 
         // Act
-        mockMvc.perform(post("/users/create-owner")
+        mockMvc.perform(post("/create-owner")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(userRequest))
                         // --- AÑADE ESTA LÍNEA PARA INCLUIR EL TOKEN CSRF ---
@@ -76,7 +76,7 @@ class UsersControllerTest {
         UserRequest invalidRequest = new UserRequest();
 
         // Act & Assert
-        mockMvc.perform(post("/users/create-owner")
+        mockMvc.perform(post("/create-owner")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsString(invalidRequest))
                         // --- AÑADE ESTA LÍNEA TAMBIÉN AQUÍ ---

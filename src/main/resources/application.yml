@@ -1,5 +1,7 @@
 server:
   port: 8090
+  servlet:
+    contextPath: /v1/users
 
 spring:
   datasource:
@@ -10,7 +12,6 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
-
 
 appDescription: "Reto plazoletas ms users"
 appVersion: "1.0.0"

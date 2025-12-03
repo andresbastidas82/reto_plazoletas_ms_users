@@ -6,4 +6,6 @@ public interface IUserServicePort {
 
     User saveUser(User user);
 
+    User getUserById(Long userId);
+
 }

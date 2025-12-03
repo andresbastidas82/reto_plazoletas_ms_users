@@ -6,4 +6,7 @@ import com.pragma.ms_users.application.dto.UserResponse;
 public interface IUserHandler {
 
     UserResponse saveUserTypeOwner(UserRequest userRequest);
+
+    UserResponse getUserById(Long userId);
+
 }
