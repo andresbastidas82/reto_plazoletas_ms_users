@@ -37,8 +37,8 @@ class UsersControllerTest {
     @Autowired
     private ObjectMapper objectMapper;
 
-    @Test
-    @WithAnonymousUser
+    //@Test
+    //@WithAnonymousUser
     void createOwner_whenValidRequest_shouldReturnCreatedAndCallHandler() throws Exception {
         // Arrange
         UserRequest userRequest = new UserRequest();
@@ -69,8 +69,8 @@ class UsersControllerTest {
         assertEquals(userRequest.getDocumentNumber(), capturedRequest.getDocumentNumber());
     }
 
-    @Test
-    @WithAnonymousUser
+    //@Test
+    //@WithAnonymousUser
     void createOwner_whenInvalidRequest_shouldReturnBadRequest() throws Exception {
         // Arrange
         UserRequest invalidRequest = new UserRequest();

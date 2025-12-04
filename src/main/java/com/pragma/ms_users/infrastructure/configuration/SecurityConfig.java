@@ -1,32 +1,50 @@
 package com.pragma.ms_users.infrastructure.configuration;
 
+import com.pragma.ms_users.infrastructure.exceptionhandler.CustomAuthenticationEntryPoint;
+import com.pragma.ms_users.infrastructure.security.JwtAuthenticationFilter;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
-    @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-        .csrf(AbstractHttpConfigurer::disable) // deshabilitar CSRF para clientes externos como Postman
-        .authorizeHttpRequests(auth -> auth
-                .anyRequest().permitAll() // permitir TODAS las rutas
-        )
-        .httpBasic(AbstractHttpConfigurer::disable) // deshabilitar autenticación básica
-        .formLogin(AbstractHttpConfigurer::disable); // deshabilitar formulario de login
+    private final JwtAuthenticationFilter jwtAuthFilter;
+    private final AuthenticationProvider authenticationProvider;
+    private final CustomAuthenticationEntryPoint customAuthenticationEntryPoint;
 
+    @Bean
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+        http
+                .csrf(AbstractHttpConfigurer::disable)
+                .exceptionHandling(exceptions ->
+                        exceptions.authenticationEntryPoint(customAuthenticationEntryPoint)
+                )
+                .sessionManagement(session -> session
+                        .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                )
+                .authenticationProvider(authenticationProvider)
+                .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                .authorizeHttpRequests(auth -> auth
+                        // Rutas públicas primero
+                        .requestMatchers("/v1/users/auth/**").permitAll()
+                        .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+
+                        //.requestMatchers("/v1/users/create-owner").permitAll()
+                        .requestMatchers("/v1/users/create-owner").hasRole("ADMIN")
+                        // Y la regla más restrictiva, al final de todo.
+                        .anyRequest().authenticated()
+                );
         return http.build();
     }
 
-    @Bean
-    public BCryptPasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
 }

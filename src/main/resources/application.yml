@@ -1,7 +1,7 @@
 server:
   port: 8090
-  servlet:
-    contextPath: /v1/users
+#  servlet:
+#    contextPath: /v1/users
 
 spring:
   datasource:
@@ -15,3 +15,17 @@ spring:
 
 appDescription: "Reto plazoletas ms users"
 appVersion: "1.0.0"
+
+application:
+  security:
+    jwt:
+      secret-key: 404E635266556A586E3272357538782F413F4428472B4B6250645367566B5970 # Una clave secreta fuerte (mínimo 256 bits, codificada en Base64)
+      expiration: 86400000
+
+logging:
+  level:
+    org:
+      springframework:
+        security: DEBUG
+
+

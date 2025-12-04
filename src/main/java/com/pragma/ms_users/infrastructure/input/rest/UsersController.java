@@ -11,9 +11,11 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
+@RequestMapping("/v1/users")
 @RequiredArgsConstructor
 public class UsersController {
 
@@ -21,7 +23,7 @@ public class UsersController {
 
     @PostMapping("/create-owner")
     public ResponseEntity<Void> createOwner(@Valid @RequestBody UserRequest userRequest) {
-        userRequest.setRole("OWNER");
+        userRequest.setRole("ROLE_OWNER");
         userHandler.saveUserTypeOwner(userRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
