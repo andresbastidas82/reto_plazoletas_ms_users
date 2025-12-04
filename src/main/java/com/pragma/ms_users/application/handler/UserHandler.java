@@ -7,7 +7,7 @@ import com.pragma.ms_users.domain.api.IUserServicePort;
 import com.pragma.ms_users.domain.model.User;
 import com.pragma.ms_users.infrastructure.exception.AdultException;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,7 +23,7 @@ public class UserHandler implements IUserHandler {
 
     private final UserRequestMapper userRequestMapper;
     private final IUserServicePort userServicePort;
-    private final BCryptPasswordEncoder bCryptPasswordEncoder;
+    private final PasswordEncoder passwordEncoder;
 
 
     @Override
@@ -31,7 +31,7 @@ public class UserHandler implements IUserHandler {
         if(Period.between(userRequest.getBirthDate(), LocalDate.now()).getYears() < OVER_18_YEARS_OLD) {
             throw new AdultException();
         }
-        userRequest.setPassword(bCryptPasswordEncoder.encode(userRequest.getPassword()));
+        userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         User user = userServicePort.saveUser(userRequestMapper.toUser(userRequest));
         return userRequestMapper.toUserResponse(user);
     }

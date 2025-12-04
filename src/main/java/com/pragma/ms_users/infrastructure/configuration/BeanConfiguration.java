@@ -10,21 +10,21 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
-@Configuration
-@RequiredArgsConstructor
+//@Configuration
+//@RequiredArgsConstructor
 public class BeanConfiguration {
 
-    private final IUserRepository userRepository;
+    /*private final IUserRepository userRepository;
     private final UserEntityMapper userEntityMapper;
 
     @Bean
     public IUserPersistencePort userPersistencePort() {
         return new UserJpaAdapter(userRepository, userEntityMapper);
-    }
+    }*/
 
-    @Bean
+    /*@Bean
     public IUserServicePort userServicePort(IUserPersistencePort userPersistencePort) {
         return new UserUseCase(userPersistencePort);
-    }
+    }*/
 
 }
