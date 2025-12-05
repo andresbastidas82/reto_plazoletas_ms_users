@@ -2,9 +2,11 @@ package com.pragma.ms_users.application.handler;
 
 import com.pragma.ms_users.application.dto.UserRequest;
 import com.pragma.ms_users.application.dto.UserResponse;
+import com.pragma.ms_users.application.handler.impl.UserHandler;
 import com.pragma.ms_users.application.mapper.UserRequestMapper;
 import com.pragma.ms_users.domain.api.IUserServicePort;
 import com.pragma.ms_users.domain.model.User;
+import com.pragma.ms_users.domain.model.enums.RoleEnum;
 import com.pragma.ms_users.infrastructure.exception.AdultException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -59,7 +61,7 @@ class UserHandlerTest {
         when(userRequestMapper.toUser(request))
                 .thenReturn(mappedUser);
 
-        when(userServicePort.saveUser(mappedUser))
+        when(userServicePort.saveUser(mappedUser, RoleEnum.ROLE_OWNER))
                 .thenReturn(savedUser);
 
         when(userRequestMapper.toUserResponse(savedUser))
@@ -74,7 +76,7 @@ class UserHandlerTest {
 
         verify(bCryptPasswordEncoder).encode("123456");
         verify(userRequestMapper).toUser(request);
-        verify(userServicePort).saveUser(mappedUser);
+        verify(userServicePort).saveUser(mappedUser, RoleEnum.ROLE_OWNER);
         verify(userRequestMapper).toUserResponse(savedUser);
     }
 
@@ -120,7 +122,7 @@ class UserHandlerTest {
         when(userRequestMapper.toUser(request))
                 .thenReturn(mappedUser);
 
-        when(userServicePort.saveUser(mappedUser))
+        when(userServicePort.saveUser(mappedUser, RoleEnum.ROLE_OWNER))
                 .thenReturn(savedUser);
 
         when(userRequestMapper.toUserResponse(savedUser))
