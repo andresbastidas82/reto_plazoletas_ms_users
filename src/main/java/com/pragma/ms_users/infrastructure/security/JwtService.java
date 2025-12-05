@@ -37,6 +37,12 @@ public class JwtService {
     public String generateToken(UserDetails userDetails) {
         // Aquí es donde agregamos el rol al token
         Map<String, Object> extraClaims = new HashMap<>();
+        if (userDetails instanceof CustomUserDetails customUserDetails) {
+            Map<String, Object> userData = new HashMap<>();
+            userData.put("id", customUserDetails.getId());
+            userData.put("name", customUserDetails.getName());
+            extraClaims.put("user", userData);
+        }
         // 1. Recolecta TODAS las autoridades (roles) en una lista de Strings.
         List<String> roles = userDetails.getAuthorities()
                 .stream()
