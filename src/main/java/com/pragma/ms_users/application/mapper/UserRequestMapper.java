@@ -1,5 +1,6 @@
 package com.pragma.ms_users.application.mapper;
 
+import com.pragma.ms_users.application.dto.EmployeeRequest;
 import com.pragma.ms_users.application.dto.UserRequest;
 import com.pragma.ms_users.application.dto.UserResponse;
 import com.pragma.ms_users.domain.model.User;
@@ -22,6 +23,9 @@ public interface UserRequestMapper {
 
     @Mapping(target = "documentType", qualifiedByName = "getDocument")
     User toUser(UserRequest userRequest);
+
+    @Mapping(target = "documentType", qualifiedByName = "getDocument")
+    User employeeToUser(EmployeeRequest employeeRequest);
 
     @Mapping(target = "documentType", qualifiedByName = "showDocument")
     UserResponse toUserResponse(User user);

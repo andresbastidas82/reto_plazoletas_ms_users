@@ -1,5 +1,6 @@
 package com.pragma.ms_users.application.handler;
 
+import com.pragma.ms_users.application.dto.EmployeeRequest;
 import com.pragma.ms_users.application.dto.UserRequest;
 import com.pragma.ms_users.application.dto.UserResponse;
 import com.pragma.ms_users.application.mapper.UserRequestMapper;
@@ -33,6 +34,13 @@ public class UserHandler implements IUserHandler {
         }
         userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
         User user = userServicePort.saveUser(userRequestMapper.toUser(userRequest));
+        return userRequestMapper.toUserResponse(user);
+    }
+
+    @Override
+    public UserResponse saveUserTypeEmployee(EmployeeRequest employeeRequest) {
+        employeeRequest.setPassword(passwordEncoder.encode(employeeRequest.getPassword()));
+        User user = userServicePort.saveUser(userRequestMapper.employeeToUser(employeeRequest));
         return userRequestMapper.toUserResponse(user);
     }
 
