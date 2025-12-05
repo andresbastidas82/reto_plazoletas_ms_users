@@ -1,5 +1,6 @@
 package com.pragma.ms_users.infrastructure.input.rest;
 
+import com.pragma.ms_users.application.dto.EmployeeRequest;
 import com.pragma.ms_users.application.dto.UserRequest;
 import com.pragma.ms_users.application.dto.UserResponse;
 import com.pragma.ms_users.application.handler.IUserHandler;
@@ -31,5 +32,12 @@ public class UsersController {
     @GetMapping("/{userId}")
     public ResponseEntity<UserResponse> getUserById(@PathVariable Long userId) {
         return ResponseEntity.ok(userHandler.getUserById(userId));
+    }
+
+    @PostMapping("/create-employee")
+    public ResponseEntity<Void> createEmployee(@Valid @RequestBody EmployeeRequest employeeRequest) {
+        employeeRequest.setRole("ROLE_EMPLOYEE");
+        userHandler.saveUserTypeEmployee(employeeRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

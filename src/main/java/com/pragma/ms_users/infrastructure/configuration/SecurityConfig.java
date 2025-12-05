@@ -41,6 +41,7 @@ public class SecurityConfig {
 
                         //.requestMatchers("/v1/users/create-owner").permitAll()
                         .requestMatchers("/v1/users/create-owner").hasRole("ADMIN")
+                        .requestMatchers("/v1/users/create-employee").hasRole("OWNER")
                         // Y la regla más restrictiva, al final de todo.
                         .anyRequest().authenticated()
                 );
