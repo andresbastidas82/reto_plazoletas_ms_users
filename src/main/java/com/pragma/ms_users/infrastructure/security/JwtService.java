@@ -41,6 +41,7 @@ public class JwtService {
             Map<String, Object> userData = new HashMap<>();
             userData.put("id", customUserDetails.getId());
             userData.put("name", customUserDetails.getName());
+            userData.put("restaurantId", customUserDetails.getRestaurantId());
             extraClaims.put("user", userData);
         }
         // 1. Recolecta TODAS las autoridades (roles) en una lista de Strings.

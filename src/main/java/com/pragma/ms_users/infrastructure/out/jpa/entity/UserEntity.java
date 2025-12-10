@@ -53,4 +53,7 @@ public class UserEntity {
 
     @Enumerated(EnumType.STRING)
     private RoleEnum role;
+
+    @Column(name = "restaurant_id")
+    private Long restaurantId;
 }
