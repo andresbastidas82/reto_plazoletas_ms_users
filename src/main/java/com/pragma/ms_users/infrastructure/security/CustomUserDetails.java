@@ -21,6 +21,7 @@ public class CustomUserDetails implements UserDetails {
     private String name;
     private String email;
     private String password;
+    private Long restaurantId;
     private List<SimpleGrantedAuthority> authorities;
 
     // Metodo estático para construir CustomUserDetails desde tu UserEntity
@@ -31,9 +32,10 @@ public class CustomUserDetails implements UserDetails {
         String fullName = userEntity.getName() + " " + userEntity.getLastName();
         return new CustomUserDetails(
                 userEntity.getId(),
-                fullName ,
+                fullName,
                 userEntity.getEmail(),
                 userEntity.getPassword(),
+                userEntity.getRestaurantId(),
                 authorities
         );
     }

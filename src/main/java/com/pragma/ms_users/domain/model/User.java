@@ -26,5 +26,6 @@ public class User {
     private String email;
     private String password;
     private RoleEnum role;
+    private Long restaurantId;
 
 }
