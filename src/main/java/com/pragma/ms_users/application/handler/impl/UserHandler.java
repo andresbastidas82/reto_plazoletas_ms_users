@@ -1,21 +1,17 @@
-package com.pragma.ms_users.application.handler;
+package com.pragma.ms_users.application.handler.impl;
 
+import com.pragma.ms_users.application.dto.CustomerRequest;
 import com.pragma.ms_users.application.dto.EmployeeRequest;
 import com.pragma.ms_users.application.dto.UserRequest;
 import com.pragma.ms_users.application.dto.UserResponse;
+import com.pragma.ms_users.application.handler.IUserHandler;
 import com.pragma.ms_users.application.mapper.UserRequestMapper;
 import com.pragma.ms_users.domain.api.IUserServicePort;
 import com.pragma.ms_users.domain.model.User;
-import com.pragma.ms_users.infrastructure.exception.AdultException;
+import com.pragma.ms_users.domain.model.enums.RoleEnum;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.time.LocalDate;
-import java.time.Period;
-
-import static com.pragma.ms_users.application.utils.Constants.OVER_18_YEARS_OLD;
 
 @Service
 @RequiredArgsConstructor
@@ -24,23 +20,23 @@ public class UserHandler implements IUserHandler {
 
     private final UserRequestMapper userRequestMapper;
     private final IUserServicePort userServicePort;
-    private final PasswordEncoder passwordEncoder;
 
 
     @Override
     public UserResponse saveUserTypeOwner(UserRequest userRequest) {
-        if(Period.between(userRequest.getBirthDate(), LocalDate.now()).getYears() < OVER_18_YEARS_OLD) {
-            throw new AdultException();
-        }
-        userRequest.setPassword(passwordEncoder.encode(userRequest.getPassword()));
-        User user = userServicePort.saveUser(userRequestMapper.toUser(userRequest));
+        User user = userServicePort.saveUser(userRequestMapper.toUser(userRequest), RoleEnum.ROLE_OWNER);
         return userRequestMapper.toUserResponse(user);
     }
 
     @Override
     public UserResponse saveUserTypeEmployee(EmployeeRequest employeeRequest) {
-        employeeRequest.setPassword(passwordEncoder.encode(employeeRequest.getPassword()));
-        User user = userServicePort.saveUser(userRequestMapper.employeeToUser(employeeRequest));
+        User user = userServicePort.saveUser(userRequestMapper.employeeToUser(employeeRequest), RoleEnum.ROLE_EMPLOYEE);
+        return userRequestMapper.toUserResponse(user);
+    }
+
+    @Override
+    public UserResponse saveUserTypeCustomer(CustomerRequest customerRequest) {
+        User user = userServicePort.saveUser(userRequestMapper.customerToUser(customerRequest), RoleEnum.ROLE_CUSTOMER);
         return userRequestMapper.toUserResponse(user);
     }
 

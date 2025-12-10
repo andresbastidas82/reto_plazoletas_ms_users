@@ -57,7 +57,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                     );
                     SecurityContextHolder.getContext().setAuthentication(authToken);
                 } else {
-                    // --- ¡AÑADE ESTE BLOQUE ELSE! ---
                     log.warn("JWT token validation failed for user: {}", userEmail);
                 }
             }

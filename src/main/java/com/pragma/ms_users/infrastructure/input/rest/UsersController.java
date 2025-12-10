@@ -1,5 +1,6 @@
 package com.pragma.ms_users.infrastructure.input.rest;
 
+import com.pragma.ms_users.application.dto.CustomerRequest;
 import com.pragma.ms_users.application.dto.EmployeeRequest;
 import com.pragma.ms_users.application.dto.UserRequest;
 import com.pragma.ms_users.application.dto.UserResponse;
@@ -24,7 +25,6 @@ public class UsersController {
 
     @PostMapping("/create-owner")
     public ResponseEntity<Void> createOwner(@Valid @RequestBody UserRequest userRequest) {
-        userRequest.setRole("ROLE_OWNER");
         userHandler.saveUserTypeOwner(userRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
@@ -36,8 +36,13 @@ public class UsersController {
 
     @PostMapping("/create-employee")
     public ResponseEntity<Void> createEmployee(@Valid @RequestBody EmployeeRequest employeeRequest) {
-        employeeRequest.setRole("ROLE_EMPLOYEE");
         userHandler.saveUserTypeEmployee(employeeRequest);
+        return ResponseEntity.status(HttpStatus.CREATED).build();
+    }
+
+    @PostMapping("/create-customer")
+    public ResponseEntity<Void> createEmployee(@Valid @RequestBody CustomerRequest customerRequest) {
+        userHandler.saveUserTypeCustomer(customerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }
 }

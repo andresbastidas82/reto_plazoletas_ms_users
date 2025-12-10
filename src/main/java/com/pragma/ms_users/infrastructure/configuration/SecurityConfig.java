@@ -37,6 +37,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         // Rutas públicas primero
                         .requestMatchers("/v1/users/auth/**").permitAll()
+                        .requestMatchers("/v1/users/create-customer").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
 
                         //.requestMatchers("/v1/users/create-owner").permitAll()

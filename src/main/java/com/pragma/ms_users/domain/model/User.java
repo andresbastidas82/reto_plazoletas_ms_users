@@ -8,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.time.LocalDate;
+
 @AllArgsConstructor
 @NoArgsConstructor
 @Getter
@@ -20,7 +22,7 @@ public class User {
     private DocumentTypeEnum documentType;
     private String documentNumber;
     private String cellphone;
-    private String birthDate;
+    private LocalDate birthDate;
     private String email;
     private String password;
     private RoleEnum role;
