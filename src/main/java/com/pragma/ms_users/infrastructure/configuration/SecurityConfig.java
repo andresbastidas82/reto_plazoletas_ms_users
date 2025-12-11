@@ -39,11 +39,12 @@ public class SecurityConfig {
                         .requestMatchers("/v1/users/auth/**").permitAll()
                         .requestMatchers("/v1/users/create-customer").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
+                        .requestMatchers("/v1/users/*").hasAnyRole("OWNER", "CUSTOMER", "ADMIN", "EMPLOYEE")
 
                         //.requestMatchers("/v1/users/create-owner").permitAll()
                         .requestMatchers("/v1/users/create-owner").hasRole("ADMIN")
                         .requestMatchers("/v1/users/create-employee").hasRole("OWNER")
-                        // Y la regla más restrictiva, al final de todo.
+                        // Y la regla más restrictiva al final
                         .anyRequest().authenticated()
                 );
         return http.build();
