@@ -36,7 +36,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .authorizeHttpRequests(auth -> auth
                         // Rutas públicas primero
-                        .requestMatchers("/v1/users/auth/**").permitAll()
+                        .requestMatchers("/v1/users/auth/login").permitAll()
                         .requestMatchers("/v1/users/create-customer").permitAll()
                         .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()
                         .requestMatchers("/v1/users/*").hasAnyRole("OWNER", "CUSTOMER", "ADMIN", "EMPLOYEE")

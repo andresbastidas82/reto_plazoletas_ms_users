@@ -41,7 +41,7 @@ public class UsersController {
     }
 
     @PostMapping("/create-customer")
-    public ResponseEntity<Void> createEmployee(@Valid @RequestBody CustomerRequest customerRequest) {
+    public ResponseEntity<Void> createCustomer(@Valid @RequestBody CustomerRequest customerRequest) {
         userHandler.saveUserTypeCustomer(customerRequest);
         return ResponseEntity.status(HttpStatus.CREATED).build();
     }

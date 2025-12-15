@@ -1,27 +1,27 @@
 package com.pragma.ms_users.application.handler;
 
+import com.pragma.ms_users.application.dto.CustomerRequest;
+import com.pragma.ms_users.application.dto.EmployeeRequest;
 import com.pragma.ms_users.application.dto.UserRequest;
 import com.pragma.ms_users.application.dto.UserResponse;
 import com.pragma.ms_users.application.handler.impl.UserHandler;
 import com.pragma.ms_users.application.mapper.UserRequestMapper;
 import com.pragma.ms_users.domain.api.IUserServicePort;
 import com.pragma.ms_users.domain.model.User;
+import com.pragma.ms_users.domain.model.enums.DocumentTypeEnum;
 import com.pragma.ms_users.domain.model.enums.RoleEnum;
-import com.pragma.ms_users.infrastructure.exception.AdultException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-
-import java.time.LocalDate;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.verifyNoInteractions;
-import static org.mockito.Mockito.when;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.*;
 
+@ExtendWith(MockitoExtension.class)
 class UserHandlerTest {
 
     @Mock
@@ -30,110 +30,98 @@ class UserHandlerTest {
     @Mock
     private IUserServicePort userServicePort;
 
-    @Mock
-    private BCryptPasswordEncoder bCryptPasswordEncoder;
-
     @InjectMocks
     private UserHandler userHandler;
 
+    private User user;
+    private UserResponse userResponse;
+
     @BeforeEach
     void setUp() {
-        MockitoAnnotations.openMocks(this);
+        // Objetos comunes que se pueden reutilizar en los tests
+        user = User.builder().id(1L).name("John").lastName("Doe").documentNumber("123456789").documentType(DocumentTypeEnum.CITIZENSHIP_CARD)
+                .cellphone("+573001234567").email("john.doe@example.com").password("password").build();
+        userResponse = UserResponse.builder().id(1L).name("John").lastName("Doe").email("john.doe@example.com")
+                .cellphone("+573001234567").build();
     }
 
-    // ------------------------------------------------------------
-    // TEST 1 — Usuario adulto → debe guardar y retornar UserResponse
-    // ------------------------------------------------------------
     @Test
-    void saveUserTypeOwner_ShouldSaveUser_WhenUserIsAdult() {
+    void saveUserTypeOwner_shouldMapRequestAndCallService() {
         // Arrange
-        UserRequest request = new UserRequest();
-        request.setBirthDate(LocalDate.now().minusYears(20));
-        request.setPassword("123456");
-
-        User mappedUser = new User();
-        User savedUser = new User();
-        UserResponse mappedResponse = new UserResponse();
-
-        when(bCryptPasswordEncoder.encode("123456"))
-                .thenReturn("ENCRYPTED_PASS");
-
-        when(userRequestMapper.toUser(request))
-                .thenReturn(mappedUser);
-
-        when(userServicePort.saveUser(mappedUser, RoleEnum.ROLE_OWNER))
-                .thenReturn(savedUser);
-
-        when(userRequestMapper.toUserResponse(savedUser))
-                .thenReturn(mappedResponse);
+        UserRequest ownerRequest = new UserRequest(); // Llenar con datos si es necesario
+        when(userRequestMapper.toUser(any(UserRequest.class))).thenReturn(user);
+        when(userServicePort.saveUser(any(User.class), eq(RoleEnum.ROLE_OWNER))).thenReturn(user);
+        when(userRequestMapper.toUserResponse(any(User.class))).thenReturn(userResponse);
 
         // Act
-        UserResponse response = userHandler.saveUserTypeOwner(request);
+        UserResponse result = userHandler.saveUserTypeOwner(ownerRequest);
 
         // Assert
-        assertNotNull(response);
-        assertEquals(mappedResponse, response);
+        assertNotNull(result);
+        assertEquals(userResponse.getId(), result.getId());
+        assertEquals(userResponse.getName(), result.getName());
 
-        verify(bCryptPasswordEncoder).encode("123456");
-        verify(userRequestMapper).toUser(request);
-        verify(userServicePort).saveUser(mappedUser, RoleEnum.ROLE_OWNER);
-        verify(userRequestMapper).toUserResponse(savedUser);
+        verify(userRequestMapper, times(1)).toUser(ownerRequest);
+        verify(userServicePort, times(1)).saveUser(user, RoleEnum.ROLE_OWNER);
+        verify(userRequestMapper, times(1)).toUserResponse(user);
     }
 
-
-    // ------------------------------------------------------------
-    // TEST 2 — Usuario menor de edad → debe lanzar AdultException
-    // ------------------------------------------------------------
     @Test
-    void saveUserTypeOwner_ShouldThrowException_WhenUserIsMinor() {
+    void saveUserTypeEmployee_shouldMapRequestAndCallService() {
         // Arrange
-        UserRequest request = new UserRequest();
-        request.setBirthDate(LocalDate.now().minusYears(17)); // < 18
-        request.setPassword("123456");
-
-        // Act & Assert
-        assertThrows(AdultException.class, () -> {
-            userHandler.saveUserTypeOwner(request);
-        });
-
-        verifyNoInteractions(bCryptPasswordEncoder);
-        verifyNoInteractions(userRequestMapper);
-        verifyNoInteractions(userServicePort);
-    }
-
-
-    // ------------------------------------------------------------
-    // TEST 3 — Verificar que la contraseña sea encriptada
-    // ------------------------------------------------------------
-    @Test
-    void saveUserTypeOwner_ShouldEncryptPassword() {
-        // Arrange
-        UserRequest request = new UserRequest();
-        request.setBirthDate(LocalDate.now().minusYears(25));
-        request.setPassword("plainPass");
-
-        User mappedUser = new User();
-        User savedUser = new User();
-        UserResponse mappedResponse = new UserResponse();
-
-        when(bCryptPasswordEncoder.encode("plainPass"))
-                .thenReturn("encrypted123");
-
-        when(userRequestMapper.toUser(request))
-                .thenReturn(mappedUser);
-
-        when(userServicePort.saveUser(mappedUser, RoleEnum.ROLE_OWNER))
-                .thenReturn(savedUser);
-
-        when(userRequestMapper.toUserResponse(savedUser))
-                .thenReturn(mappedResponse);
+        EmployeeRequest employeeRequest = new EmployeeRequest();
+        when(userRequestMapper.employeeToUser(any(EmployeeRequest.class))).thenReturn(user);
+        when(userServicePort.saveUser(any(User.class), eq(RoleEnum.ROLE_EMPLOYEE))).thenReturn(user);
+        when(userRequestMapper.toUserResponse(any(User.class))).thenReturn(userResponse);
 
         // Act
-        userHandler.saveUserTypeOwner(request);
+        UserResponse result = userHandler.saveUserTypeEmployee(employeeRequest);
 
         // Assert
-        assertEquals("encrypted123", request.getPassword());
-        verify(bCryptPasswordEncoder).encode("plainPass");
+        assertNotNull(result);
+        assertEquals(userResponse.getId(), result.getId());
+
+        verify(userRequestMapper, times(1)).employeeToUser(employeeRequest);
+        verify(userServicePort, times(1)).saveUser(user, RoleEnum.ROLE_EMPLOYEE);
+        verify(userRequestMapper, times(1)).toUserResponse(user);
     }
 
+    @Test
+    void saveUserTypeCustomer_shouldMapRequestAndCallService() {
+        // Arrange
+        CustomerRequest customerRequest = new CustomerRequest();
+        when(userRequestMapper.customerToUser(any(CustomerRequest.class))).thenReturn(user);
+        when(userServicePort.saveUser(any(User.class), eq(RoleEnum.ROLE_CUSTOMER))).thenReturn(user);
+        when(userRequestMapper.toUserResponse(any(User.class))).thenReturn(userResponse);
+
+        // Act
+        UserResponse result = userHandler.saveUserTypeCustomer(customerRequest);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(userResponse.getId(), result.getId());
+
+        verify(userRequestMapper, times(1)).customerToUser(customerRequest);
+        verify(userServicePort, times(1)).saveUser(user, RoleEnum.ROLE_CUSTOMER);
+        verify(userRequestMapper, times(1)).toUserResponse(user);
+    }
+
+    @Test
+    void getUserById_shouldCallServiceAndMapResponse() {
+        // Arrange
+        Long userId = 1L;
+        when(userServicePort.getUserById(userId)).thenReturn(user);
+        when(userRequestMapper.toUserResponse(user)).thenReturn(userResponse);
+
+        // Act
+        UserResponse result = userHandler.getUserById(userId);
+
+        // Assert
+        assertNotNull(result);
+        assertEquals(userResponse.getId(), result.getId());
+        assertEquals(userResponse.getEmail(), result.getEmail());
+
+        verify(userServicePort, times(1)).getUserById(userId);
+        verify(userRequestMapper, times(1)).toUserResponse(user);
+    }
 }

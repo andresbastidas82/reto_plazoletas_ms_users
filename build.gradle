@@ -76,6 +76,7 @@ jacocoTestReport {
                 '**/configuration/**',
                 // Excluir DTOs, Entidades y Mappers que son principalmente datos y boilerplate
                 '**/dto/**',
+                '**/model/**',
                 '**/entity/**',
                 '**/mapper/**',
                 // Excluir excepciones personalizadas

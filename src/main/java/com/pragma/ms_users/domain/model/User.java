@@ -4,6 +4,7 @@ package com.pragma.ms_users.domain.model;
 import com.pragma.ms_users.domain.model.enums.DocumentTypeEnum;
 import com.pragma.ms_users.domain.model.enums.RoleEnum;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,6 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 @Getter
 @Setter
+@Builder
 public class User {
 
     private Long id;
